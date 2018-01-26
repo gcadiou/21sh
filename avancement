@@ -1,4 +1,7 @@
 comprendre la grammaire du shell : http://pubs.opengroup.org/onlinepubs/009695399/utilities/xcu_chap02.html#tag_02_03
-
+partie token recognition : ceci est la partie qui explique comment delimiter un token donc une sorte de field.
+partie grammar shell : ensuite ceci est la partie qui explique que faire en fonction du token.
 comprendre comment faire lexer/parser : http://henri-garreta.developpez.com/tutoriels/techniques-outils-compilation/?page=page_2
 http://damien-guichard.developpez.com/tutoriels/ocaml/?page=page_7
+
+ast tuto : https://ruslanspivak.com/lsbasi-part7/
