@@ -6,7 +6,7 @@
 /*   By: gcadiou <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/09 05:25:10 by gcadiou           #+#    #+#             */
-/*   Updated: 2017/12/14 14:42:43 by gcadiou          ###   ########.fr       */
+/*   Updated: 2018/02/06 21:12:48 by gcadiou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@
 # include <stdio.h>
 # include "get_next_line.h"
 
-# define ISSPACE(s, i) s[i] == ' ' || s[i] == '\t'
-# define NOSPACE(s, i) s[i] != ' ' && s[i] != '\t'
+# define ISSPACE(c) c == ' ' || c == '\t'
+# define NOSPACE(c) c != ' ' && c != '\t'
 
 # define DOUBLEQUOTE(s, i) s[i] == '"'
 
