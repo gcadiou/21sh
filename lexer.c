@@ -6,7 +6,7 @@
 /*   By: gcadiou <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/06 14:21:19 by gcadiou           #+#    #+#             */
-/*   Updated: 2018/02/06 21:15:31 by gcadiou          ###   ########.fr       */
+/*   Updated: 2018/02/07 16:16:47 by gcadiou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,22 +27,25 @@ char	*fill_stream(char **argv)
 	return (stream);
 }
 
-int		next_token(int x, t_token *lexeme, char *stream)
+int		next_token(int x, int *y, t_token *lexeme, char *stream)
 {
-	while (ISSPACE(stream[x]))
-			x++;
-	if (check_newline(&x, lexeme, stream) == 1)
+	while (ISSPACE(stream[*y]))
+		(*y)++;
+	if (check_newline(&x, y, lexeme, stream) == 1)
+		return (0);
+	else if (check_operator(&x, y, lexeme, stream) == 1)
 		return (x);
-	else if (check_operator(&x, lexeme, stream) == 1)
-		return (x);
-	else if (check_io_number(&x, lexeme, stream) == 1)
-		return (x);
+//	else if (check_io_number(&x, y, lexeme, stream) == 1)
+//		return (x);
 	else
 	{
-		while (NOSPACE(stream[x]))
-			x++;
+		lexeme[x].type = TOKEN;
+		while (NOSPACE(stream[*y]) && stream[*y] != '\0')
+			(*y)++;
 	}
-	return (x);
+	ft_putnbr(*y);
+	ft_putendl("");
+	return (x + 1);
 }
 
 int		main(int argc, char *argv[])
@@ -51,8 +54,10 @@ int		main(int argc, char *argv[])
 	int		token_max;
 	char	*stream;
 	int		x;
+	int		y;
 
 	x = 0;
+	y = 0;
 	if (argc < 2)
 	{
 		ft_putstr("no args");
@@ -62,13 +67,18 @@ int		main(int argc, char *argv[])
 	lexeme = malloc(sizeof(lexeme) * token_max);
 	ft_bzero(lexeme, 64);
 	stream = fill_stream(argv);
-	while ((x = next_token(x, lexeme, stream)) != 0)
+	while ((x = next_token(x, &y, lexeme, stream)) != 0)
 	{
 		if (x == token_max - 1)
 		{
 			lexeme = ft_realloc(lexeme, token_max * 2, token_max);
 			token_max *= 2;
 		}
+	}
+	while (x < token_max)
+	{
+		ft_putnbr(lexeme[x].type);
+		x++;
 	}
 	return 0;
 }

@@ -8,6 +8,8 @@ ast tuto : https://ruslanspivak.com/lsbasi-part7/
 			https://doc.lagout.org/programmation/Pragmatic%20Programmers/Language%20Implementation%20Patterns.pdf
 dragon book : https://github.com/Jiantastic/c-to-mips-compiler/blob/master/Books/Dragon%20Book%20-%20Compilers%20Principles%20Techniques%20and%20Tools%20(2nd%20Edition).pdf
 
-continuer le lexer, doit mtn creer tous les token checker dans un new fichier.
-
 penser a remettre corriger les fonctions avec ISSPACE dans la libft.
+
+checker code anyo.
+
+trouver le bug du lexer dans les x/y.
