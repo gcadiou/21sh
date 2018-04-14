@@ -3,92 +3,71 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gcadiou <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: anyo <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/11/21 17:43:49 by gcadiou           #+#    #+#             */
-/*   Updated: 2016/11/25 00:31:10 by gcadiou          ###   ########.fr       */
+/*   Created: 2016/11/09 14:01:22 by anyo              #+#    #+#             */
+/*   Updated: 2017/11/30 16:49:16 by anyo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static char		*ft_strrev(char *s)
-{
-	size_t	size;
-	size_t	size2;
-	char	a;
-	char	b;
+/*
+**	-------------------------------------------------------------------------- +
+**	Allocate (with malloc(3)) and returns a “fresh” string ending with ’\0’
+**	representing the integer `n` given as argument.
+**	Negative numbers must be supported.
+**	If the allocation fails, the function returns NULL.
+**	-------------------------------------------------------------------------- +
+*/
 
-	size = 0;
-	size2 = 0;
-	while (s[size] != '\0')
-		size++;
-	size--;
-	while (size > size2)
+static void	ft_negative(long x, int len, char *ret)
+{
+	int	backslash0;
+
+	backslash0 = len + 1;
+	x = -x;
+	*ret = '-';
+	while (len > 0)
 	{
-		a = s[size];
-		b = s[size2];
-		s[size] = b;
-		s[size2] = a;
-		size--;
-		size2++;
+		*(ret + len--) = x % 10 + 48;
+		x /= 10;
 	}
-	return (s);
+	*(ret + backslash0) = '\0';
 }
 
-static size_t	nbchar(long nb)
+static void	ft_positive(long x, int len, char *ret)
 {
-	size_t	count;
+	int	backslash0;
 
-	count = 0;
-	if (nb == 0)
-		return (1);
-	if (nb < 0)
+	backslash0 = len;
+	while (len > 0)
 	{
-		nb = -nb;
-		count++;
+		*(ret + len-- - 1) = x % 10 + 48;
+		x /= 10;
 	}
-	while (nb > 0)
-	{
-		nb /= 10;
-		count++;
-	}
-	return (count);
+	*(ret + backslash0) = '\0';
 }
 
-static void		vivelanorme(char *s, int x, size_t i, long nb)
+char		*ft_itoa(int n)
 {
-	while (nb > 0)
-	{
-		s[i] = (nb % 10) + 48;
-		nb /= 10;
-		i++;
-	}
-	if (x == -1)
-		s[i] = '-';
-	ft_strrev(s);
-}
+	long	x;
+	int		len;
+	char	*ret;
 
-char			*ft_itoa(int n)
-{
-	int		x;
-	size_t	i;
-	char	*s;
-	long	nb;
-
-	nb = n;
-	x = 0;
-	i = 0;
-	if (!(s = ft_strnew(nbchar(nb))))
-		return (NULL);
-	if (nb < 0)
+	x = n;
+	len = (int)ft_intlen(x);
+	if (x < 0)
 	{
-		x = -1;
-		nb = -nb;
+		if (!(ret = ft_strnew(len + 1)))
+			return (NULL);
+		ft_negative(x, len, ret);
 	}
-	if (nb == 0)
-		s[0] = '0';
 	else
-		vivelanorme(s, x, i, nb);
-	return (s);
+	{
+		if (!(ret = ft_strnew(len)))
+			return (NULL);
+		ft_positive(x, len, ret);
+	}
+	return (ret);
 }

@@ -3,32 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strrchr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gcadiou <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: anyo <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/11/10 00:44:12 by gcadiou           #+#    #+#             */
-/*   Updated: 2016/11/25 00:45:18 by gcadiou          ###   ########.fr       */
+/*   Created: 2016/11/05 18:47:46 by anyo              #+#    #+#             */
+/*   Updated: 2017/11/30 16:24:38 by anyo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
+/*
+**	-------------------------------------------------------------------------- +
+**	man 3 strrchr
+**	-------------------------------------------------------------------------- +
+*/
+
 char	*ft_strrchr(const char *s, int c)
 {
 	size_t	i;
-	int		tmp;
 
-	tmp = -1;
-	i = 0;
-	while (s[i])
-	{
-		if (s[i] == c)
-			tmp = (int)i;
-		i++;
-	}
-	if (tmp != -1)
-		return ((char *)&s[tmp]);
-	else if (s[i] == c)
-		return ((char *)&s[i]);
-	else
-		return (0);
+	i = ft_strlen((char *)s);
+	while (i > 0 && *(s + i) != (char)c)
+		i--;
+	return (*(s + i) == (char)c ? (char *)s + i : NULL);
 }

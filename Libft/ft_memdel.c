@@ -3,20 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memdel.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gcadiou <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: anyo <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/11/18 18:26:01 by gcadiou           #+#    #+#             */
-/*   Updated: 2016/11/19 13:23:23 by gcadiou          ###   ########.fr       */
+/*   Created: 2016/11/08 15:48:38 by anyo              #+#    #+#             */
+/*   Updated: 2017/11/30 17:31:01 by anyo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
+/*
+**	-------------------------------------------------------------------------- +
+**	Takes as a parameter the address of a memory area that needs to be freed
+**	with free(3), then puts the pointer to NULL.
+**	-------------------------------------------------------------------------- +
+*/
+
 void	ft_memdel(void **ap)
 {
-	if (ap)
-	{
-		free(*ap);
-		*ap = NULL;
-	}
+	if (!ap || !*ap)
+		return ;
+	ft_free(*ap);
+	*ap = NULL;
 }

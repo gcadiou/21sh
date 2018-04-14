@@ -3,31 +3,36 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strsub.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gcadiou <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: anyo <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/11/18 20:20:13 by gcadiou           #+#    #+#             */
-/*   Updated: 2016/11/25 08:33:32 by gcadiou          ###   ########.fr       */
+/*   Created: 2016/11/08 17:27:59 by anyo              #+#    #+#             */
+/*   Updated: 2017/11/30 16:41:41 by anyo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
+/*
+**	-------------------------------------------------------------------------- +
+**	Allocates (with malloc(3)) and returns a “fresh” substring from the string
+**	given as argument.
+**	The substring begins at index `start` and is of size `len`.
+**	If `start` and `len` aren’t refering to a valid substring, the behavior is
+**	undefined.
+**	If the allocation fails, the function returns NULL.
+**	-------------------------------------------------------------------------- +
+*/
+
 char	*ft_strsub(char const *s, unsigned int start, size_t len)
 {
 	size_t	i;
-	char	*new;
+	char	*ptr;
 
 	i = 0;
-	if (!s)
+	if (!s || !(ptr = ft_strnew(len)))
 		return (NULL);
-	if (!(new = (char *)malloc(sizeof(char) * (len + 1))))
-		return (0);
-	while (i < len)
-	{
-		new[i] = s[start];
-		i++;
-		start++;
-	}
-	new[i] = '\0';
-	return (new);
+	while (len > i)
+		*(ptr + i++) = *(s + start++);
+	*(ptr + i) = '\0';
+	return (ptr);
 }

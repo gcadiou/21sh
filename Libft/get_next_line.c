@@ -3,130 +3,128 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gcadiou <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: anyo <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/12/09 17:17:41 by gcadiou           #+#    #+#             */
-/*   Updated: 2017/09/16 04:29:50 by gcadiou          ###   ########.fr       */
+/*   Created: 2017/08/15 18:11:24 by anyo              #+#    #+#             */
+/*   Updated: 2018/03/29 17:55:16 by apedron          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
-#include <unistd.h>
-#include <fcntl.h>
-#include <stdlib.h>
+#include "libft.h"
 
-int				old_to_new(t_gnl *gnl)
+/*
+**	fd_to_string() reads on a given file descriptor, and returns a new string
+**	containing the readen data from the file descriptor, or NULL on failure.
+*/
+
+static char		*fd_to_string(const int fd, char *mem)
 {
-	int		i;
-	int		i2;
+	char	*buffer;
 	char	*tmp;
-
-	i = 0;
-	i2 = 0;
-	if (gnl->str_new)
-		free(gnl->str_new);
-	check_malloc(gnl->str_new = malloc(sizeof(char) *
-			(1 + ft_strlentil(gnl->str_old, '\n', 0))), "gnl: old_to_new");
-	while (gnl->str_old[i])
-	{
-		if ((gnl->ret = 1) && gnl->str_old[i] == '\n')
-		{
-			gnl->str_new[i++] = '\0';
-			tmp = ft_strsub(gnl->str_old, i, ft_strlen(&gnl->str_old[i]));
-			free(gnl->str_old);
-			gnl->str_old = tmp;
-			return (1);
-		}
-		gnl->str_new[i2] = gnl->str_old[i];
-		i++;
-		i2++;
-	}
-	return (norme_old_to_new(gnl, i, i2));
-}
-
-int				read_and_add(const int fd, t_gnl *gnl)
-{
-	char	buf[BUFF_SIZE + 1];
-	int		i;
 	int		ret;
 
-	while ((ret = read(fd, buf, BUFF_SIZE)) > 0)
+	if (!(buffer = ft_strnew(BUFF_SIZE + 1)))
+		return (NULL);
+	while ((ret = read(fd, buffer, BUFF_SIZE)))
 	{
-		gnl->ret = 1;
-		i = 0;
-		buf[ret] = '\0';
-		while (buf[i] != '\n' && i < ret)
-			i++;
-		gnl->str_new = ft_realloc(gnl->str_new, sizeof(char) *
-				(ft_strlen(gnl->str_new) + i + 1), ft_strlen(gnl->str_new) + 1);
-		ft_strncat(gnl->str_new, buf, i);
-		if (buf[i] == '\n')
+		if (ret == -1)
 		{
-			i++;
-			check_malloc(gnl->str_old = malloc(sizeof(char) *
-						(ft_strlen(&buf[i]) + 1)), "gnl: read_and_add");
-			ft_strcpy(gnl->str_old, &buf[i]);
-			return (1);
+			ft_strdel(&buffer);
+			return (NULL);
 		}
+		*(buffer + ret) = '\0';
+		if (!(tmp = ft_strjoin(mem, buffer)))
+			return (NULL);
+		ft_strdel(&mem);
+		mem = tmp;
+		if ((ft_strchr(mem, '\n')))
+			break ;
 	}
-	return (ret);
+	ft_strdel(&buffer);
+	return (mem);
 }
 
-int				wicheone(int fd, t_gnl **gnl)
-{
-	int		i;
+/*
+**	change_values() cuts the returned string (or previous `mem` value if it
+**	still contains '\n' character) to the very first '\n' character, copies it
+**	into `line`, and copies the remaining characters into `mem`.
+*/
 
-	i = 0;
-	while (((*gnl)[i]).fd != fd)
+static int		change_values(char **line, char **mem, char **str)
+{
+	if (!(*str = ft_strdup(*mem)))
+		return (-1);
+	ft_strdel(mem);
+	if (**str == '\n')
 	{
-		if (((*gnl)[i]).last == 1)
-		{
-			((*gnl)[i]).last = 0;
-			i++;
-			*gnl = (t_gnl*)ft_realloc(*gnl, (sizeof(t_gnl) * (i + 1)),
-						sizeof(t_gnl) * i);
-			((*gnl)[i]).fd = fd;
-			((*gnl)[i]).last = 1;
-			return (i);
-		}
-		i++;
+		if (!(*mem = ft_strdup(*str + 1)))
+			return (-1);
+		ft_strdel(str);
+		if (!(*line = ft_strnew(0)))
+			return (-1);
+		return (1);
 	}
-	return (i);
+	if (!(*mem = ft_strchr(*str, '\n') ?
+			ft_strdup(ft_strchr(*str, '\n') + 1) :
+			ft_strnew(0)))
+		return (-1);
+	if ((ft_strchr(*str, '\n')))
+		*ft_strchr(*str, '\n') = '\0';
+	*line = *str;
+	return (0);
 }
 
-static	void	vivelanorme2(t_gnl *gnl)
+/*
+**	fd_select() helps managing multiple file descriptor, by returning
+**	the memory string corresponding to the file descriptor.
+*/
+
+static t_mfd	*fd_select(const int fd, t_mfd **head)
 {
-	gnl->ret = 0;
-	if (gnl->str_new)
-		free(gnl->str_new);
-	check_malloc(gnl->str_new = (char *)ft_memalloc(sizeof(char)),
-			"gnl: vivelanorme2");
-	gnl->str_new[0] = '\0';
+	t_mfd	*elm;
+
+	elm = *head;
+	while (elm)
+	{
+		if (elm->fd == (int)fd)
+			return (elm);
+		elm = elm->next;
+	}
+	if (!elm)
+	{
+		if (!(elm = malloc(sizeof(t_mfd))))
+			return (NULL);
+		if (!(elm->mem = ft_strnew(0)))
+			return (NULL);
+		elm->fd = (int)fd;
+		elm->next = *head;
+		*head = elm;
+	}
+	return (elm);
 }
+
+/*
+**	get_next_line() returns a line ending with a newline,
+**	read from a file descriptor.
+**	-	return (1) if a line has been read,
+**	-	return (0) when reading has been completed,
+**	-	return (-1) if an error occurred.
+*/
 
 int				get_next_line(const int fd, char **line)
 {
-	static t_gnl	*gnl = NULL;
-	int				act;
+	static t_mfd	*head = NULL;
+	t_mfd			*curr;
+	char			*str;
+	int				ret;
 
-	if (fd < 0 || line == NULL)
+	if (!line || fd < 0)
 		return (-1);
-	if (gnl == NULL)
-	{
-		check_malloc(gnl = (t_gnl*)ft_memalloc(sizeof(t_gnl) * 1),
-				"gnl: get_next_line");
-		gnl[0].last = 1;
-		gnl[0].fd = fd;
-	}
-	act = wicheone(fd, &gnl);
-	vivelanorme2(&(gnl[act]));
-	if (norme_gnl(gnl, line, act) == 1)
-		return (1);
-	gnl[act].notfirst = read_and_add(fd, &(gnl[act]));
-	*line = gnl[act].str_new;
-	if (gnl[act].notfirst == -1)
+	if (!(curr = fd_select(fd, &head)))
 		return (-1);
-	if (gnl[act].ret == 0)
-		return (norme_gnl_free(&gnl, line, act));
-	return (gnl[act].ret);
+	if (!(ft_strchr(curr->mem, '\n')))
+		if (!(curr->mem = fd_to_string(fd, curr->mem)))
+			return (-1);
+	ret = change_values(line, &curr->mem, &str);
+	return (ret == 0 ? !!(*(str + 0)) : ret);
 }

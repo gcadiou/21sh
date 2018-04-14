@@ -3,48 +3,39 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gcadiou <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: anyo <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/08/09 13:45:41 by gcadiou           #+#    #+#             */
-/*   Updated: 2017/11/17 14:08:39 by gcadiou          ###   ########.fr       */
+/*   Created: 2016/11/04 11:54:23 by anyo              #+#    #+#             */
+/*   Updated: 2018/01/29 18:28:31 by anyo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static long	boucles(const char *str, int compteur, long nbr)
+/*
+**	-------------------------------------------------------------------------- +
+**	man 3 atoi
+**	-------------------------------------------------------------------------- +
+*/
+
+int		ft_atoi(const char *str)
 {
-	int		negative;
+	int sign;
+	int res;
+	int	i;
 
-	negative = 1;
-	while (str[compteur] == 32 || str[compteur] == '\n' || str[compteur] == '\f'
-	|| str[compteur] == '\v' || str[compteur] == '\t' || str[compteur] == '\r')
-		compteur++;
-	if (str[compteur] == 43)
-		compteur++;
-	else if (str[compteur] == 45)
-	{
-		negative = -1;
-		compteur++;
-	}
-	while (str[compteur] < 58 && str[compteur] > 47)
-	{
-		nbr *= 10;
-		nbr += (str[compteur] - 48);
-		compteur++;
-	}
-	if (negative == -1)
-		nbr *= negative;
-	return (nbr);
-}
-
-int			ft_atoi(const char *str)
-{
-	int		compteur;
-	long	nbr;
-
-	compteur = 0;
-	nbr = 0;
-	nbr = boucles(str, compteur, nbr);
-	return (nbr);
+	i = 0;
+	res = 0;
+	sign = 1;
+	while ((*(str + i) == ' ') || (*(str + i) == '\f') ||
+			(*(str + i) == '\n') || (*(str + i) == '\r') ||
+				(*(str + i) == '\t') || (*(str + i) == '\v'))
+		i++;
+	if (*(str + i) == '-')
+		sign = -1;
+	if (*(str + i) == '-' || *(str + i) == '+')
+		i++;
+	while (ft_isdigit(*(str + i)))
+		res = (res * 10) + (int)(*(str + i++) - '0');
+	return (sign * res);
 }

@@ -3,40 +3,38 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strstr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gcadiou <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: anyo <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/08/15 23:01:15 by gcadiou           #+#    #+#             */
-/*   Updated: 2016/11/24 06:06:50 by gcadiou          ###   ########.fr       */
+/*   Created: 2016/11/05 18:19:52 by anyo              #+#    #+#             */
+/*   Updated: 2017/11/30 17:37:51 by anyo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strstr(const char *str, const char *to_find)
-{
-	int count;
-	int count2;
-	int a;
+/*
+**	-------------------------------------------------------------------------- +
+**	man 3 strstr
+**	-------------------------------------------------------------------------- +
+*/
 
-	count = 0;
-	if (!to_find[0])
-		return ((char *)str);
-	while (str[count] != '\0')
+char	*ft_strstr(const char *big, const char *little)
+{
+	const char	*ptr1;
+	const char	*ptr2;
+
+	while (*big)
 	{
-		if (str[count] == to_find[0])
+		ptr1 = big;
+		ptr2 = little;
+		while (*ptr1 && *ptr2 && *ptr1 == *ptr2)
 		{
-			count2 = 0;
-			a = count;
-			while (str[count] == to_find[count2])
-			{
-				count++;
-				count2++;
-				if (to_find[count2] == '\0')
-					return ((char *)str + count - count2);
-			}
-			count = a;
+			ptr1++;
+			ptr2++;
 		}
-		count++;
+		if (*ptr2 == '\0')
+			return ((char *)big);
+		big++;
 	}
-	return (0);
+	return (!(ft_strlen(big)) && !(ft_strlen(little)) ? (char *)big : NULL);
 }

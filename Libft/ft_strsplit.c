@@ -3,106 +3,68 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strsplit.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gcadiou <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: anyo <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/11/19 13:16:52 by gcadiou           #+#    #+#             */
-/*   Updated: 2017/02/12 19:57:37 by gcadiou          ###   ########.fr       */
+/*   Created: 2017/08/20 19:14:22 by anyo              #+#    #+#             */
+/*   Updated: 2018/01/29 18:07:07 by anyo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	strlentil(const char *s, char c, size_t i)
-{
-	size_t	count;
+/*
+**	-------------------------------------------------------------------------- +
+**	Allocates (with malloc(3)) and returns an array of “fresh” strings
+**	(all ending with ’\0’, including the array itself) obtained by spliting `s`
+**	using the character `c` as a delimiter.
+**	If the allocation fails the function returns NULL.
+**
+**	Example : ft_strsplit("*hello*fellow***students*", ’*’) returns the array
+**	["hello", "fellow", "students"].
+**	-------------------------------------------------------------------------- +
+*/
 
-	count = 0;
-	while (s[i] && s[i] != c)
-	{
-		count++;
-		i++;
-	}
-	return (count);
-}
-
-static int	calcnbwords(char const *s, char c)
+static int	get_word_len(char const *s, char c)
 {
-	int		nbwords;
-	size_t	i;
+	int	len;
+	int	i;
 
 	i = 0;
-	nbwords = 0;
-	if (s[i] == c)
-		nbwords--;
-	while (s[i])
+	len = 0;
+	while (*(s + i) && *(s + i) == c)
+		i++;
+	while (*(s + i) && *(s + i) != c)
 	{
-		while (s[i] != c && s[i])
-			i++;
-		nbwords++;
-		while (s[i] == c && s[i])
-			i++;
+		i++;
+		len++;
 	}
-	return (nbwords);
-}
-
-static int	vivelanorme(char const *s, char c, int numwords)
-{
-	int		is;
-	int		it;
-
-	is = 0;
-	it = 0;
-	while (it++ != numwords)
-	{
-		while (s[is] == c)
-			is++;
-		while (s[is] && s[is] != c)
-			is++;
-	}
-	while (s[is] == c)
-		is++;
-	return (is);
-}
-
-static char	**filltab(char **tab, char const *s, char c, int numwords)
-{
-	int		it1;
-	size_t	is;
-	size_t	it2;
-
-	it2 = 0;
-	it1 = 0;
-	is = vivelanorme(s, c, numwords);
-	if (!(tab[numwords] =
-				(char *)malloc(sizeof(char) * strlentil(s, c, is) + 1)))
-		return (0);
-	while (s[is] != c && s[is])
-	{
-		tab[numwords][it2] = s[is];
-		is++;
-		it2++;
-	}
-	tab[numwords][it2] = '\0';
-	return (tab);
+	return (len);
 }
 
 char		**ft_strsplit(char const *s, char c)
 {
-	char	**tab;
-	int		nbwords;
-	int		numwords;
+	char	**arr;
+	int		i;
+	int		j;
+	int		k;
 
-	if (!s)
+	i = 0;
+	j = 0;
+	if (!s || !(arr = ft_memalloc(sizeof(char *) *
+					(ft_nbofwords((char *)s, c) + 1))))
 		return (NULL);
-	nbwords = calcnbwords(s, c);
-	if (!(tab = (char **)malloc(sizeof(*tab) * (nbwords + 1))))
-		return (NULL);
-	numwords = 0;
-	while (numwords < nbwords)
+	while (i < ft_nbofwords((char *)s, c))
 	{
-		tab = filltab(tab, s, c, numwords);
-		numwords++;
+		k = 0;
+		if (!(*(arr + i) = ft_strnew(get_word_len(&s[j], c) + 1)))
+			return (NULL);
+		while (*(s + j) && *(s + j) == c)
+			j++;
+		while (*(s + j) && *(s + j) != c)
+			arr[i][k++] = *(s + j++);
+		arr[i][k] = '\0';
+		i++;
 	}
-	tab[numwords] = 0;
-	return (tab);
+	*(arr + i) = NULL;
+	return (arr);
 }

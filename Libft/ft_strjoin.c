@@ -3,38 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gcadiou <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: anyo <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/11/18 20:30:41 by gcadiou           #+#    #+#             */
-/*   Updated: 2017/02/12 20:18:12 by gcadiou          ###   ########.fr       */
+/*   Created: 2016/11/08 17:36:24 by anyo              #+#    #+#             */
+/*   Updated: 2017/11/30 16:42:33 by anyo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
+/*
+**	-------------------------------------------------------------------------- +
+**	Allocates (with malloc(3)) and returns a “fresh” string ending with ’\0’,
+**	result of the concatenation of `s1` and `s2`.
+**	If the allocation fails the function returns NULL.
+**	-------------------------------------------------------------------------- +
+*/
+
 char	*ft_strjoin(char const *s1, char const *s2)
 {
-	char	*new;
-	size_t	is;
-	size_t	in;
+	char	*ptr;
 
-	is = -1;
-	in = 0;
-	if (!s1 || !s2)
+	if (!s1 || !s2 || !(ptr = ft_strnew(ft_strlen(s1) + ft_strlen(s2))))
 		return (NULL);
-	if (!(new = malloc(sizeof(char) * ((ft_strlen(s1)) + (ft_strlen(s2)) + 1))))
-		return (0);
-	while (++is < (size_t)ft_strlen(s1))
-	{
-		new[in] = s1[is];
-		in++;
-	}
-	is = -1;
-	while (++is < (size_t)ft_strlen(s2))
-	{
-		new[in] = s2[is];
-		in++;
-	}
-	new[in] = '\0';
-	return (new);
+	ft_strcpy(ptr, s1);
+	ft_strcat(ptr, s2);
+	return (ptr);
 }

@@ -3,25 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   ft_striter.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gcadiou <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: anyo <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/11/18 19:23:53 by gcadiou           #+#    #+#             */
-/*   Updated: 2016/11/25 08:30:51 by gcadiou          ###   ########.fr       */
+/*   Created: 2016/11/08 16:42:40 by anyo              #+#    #+#             */
+/*   Updated: 2017/11/30 16:36:30 by anyo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_striter(char *s, void (*f) (char *))
+/*
+**	-------------------------------------------------------------------------- +
+**	Applies the function `f` to each character of the string passed as argument.
+**	Each character is passed by address to `f` to be modified if necessary.
+**	-------------------------------------------------------------------------- +
+*/
+
+void	ft_striter(char *s, void (*f)(char *))
 {
 	size_t	i;
 
-	i = 0;
-	if (!s || !f)
-		return ;
-	while (s[i])
-	{
-		f(&s[i]);
-		i++;
-	}
+	i = -1;
+	if (s && f)
+		while (*(s + ++i))
+			f(s + i);
 }

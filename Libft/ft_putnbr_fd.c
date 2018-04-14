@@ -3,41 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   ft_putnbr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gcadiou <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: anyo <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/11/23 20:59:15 by gcadiou           #+#    #+#             */
-/*   Updated: 2016/11/23 21:40:30 by gcadiou          ###   ########.fr       */
+/*   Created: 2016/11/08 16:26:31 by anyo              #+#    #+#             */
+/*   Updated: 2017/11/30 16:57:10 by anyo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	lboucles(long nb, int fd)
+/*
+**	-------------------------------------------------------------------------- +
+**	Outputs the integer `n` to the file descriptor `fd`.
+**	-------------------------------------------------------------------------- +
+*/
+
+void	ft_putnbr_fd(int n, int fd)
 {
-	char	b;
+	long	i;
 
-	while (nb > 0)
+	i = n;
+	if (i < 0)
 	{
-		b = (char)(nb % 10) + '0';
-		nb = lboucles(nb / 10, fd);
-		ft_putchar_fd(b, fd);
-	}
-	return (0);
-}
-
-void		ft_putnbr_fd(int nb, int fd)
-{
-	long	lnb;
-
-	if (nb < 0)
-	{
-		lnb = nb;
 		ft_putchar_fd('-', fd);
-		lnb = lnb * -1;
-		lboucles(lnb, fd);
+		i = -i;
 	}
-	else if (nb == 0)
-		ft_putchar_fd('0', fd);
-	else
-		lboucles(nb, fd);
+	if (i > 9)
+		ft_putnbr_fd(i / 10, fd);
+	ft_putchar_fd(i % 10 + 48, fd);
 }

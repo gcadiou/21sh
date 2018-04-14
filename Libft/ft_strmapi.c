@@ -3,30 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strmapi.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gcadiou <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: anyo <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/11/18 20:05:47 by gcadiou           #+#    #+#             */
-/*   Updated: 2016/11/25 08:32:04 by gcadiou          ###   ########.fr       */
+/*   Created: 2016/11/08 17:21:17 by anyo              #+#    #+#             */
+/*   Updated: 2017/11/30 16:38:51 by anyo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
+/*
+**	-------------------------------------------------------------------------- +
+**	Applies the function `f` to each character of the string passed as argument
+**	by giving its index as first argument to create a “fresh” new string
+**	(with malloc(3)) resulting from the successive applications of `f`.
+**	-------------------------------------------------------------------------- +
+*/
+
 char	*ft_strmapi(char const *s, char (*f)(unsigned int, char))
 {
-	size_t	i;
-	char	*new;
+	unsigned int	i;
+	char			*ptr;
 
-	i = 0;
-	if (!s || !f)
+	i = -1;
+	if (!s || !(ptr = ft_strnew(ft_strlen(s))))
 		return (NULL);
-	if (!(new = malloc(sizeof(char) * (ft_strlen(s) + 1))))
-		return (NULL);
-	while (s[i])
-	{
-		new[i] = f((unsigned int)i, (char)s[i]);
-		i++;
-	}
-	new[i] = '\0';
-	return (new);
+	while (*(s + ++i))
+		*(ptr + i) = f(i, *(s + i));
+	*(ptr + i) = '\0';
+	return (ptr);
 }
